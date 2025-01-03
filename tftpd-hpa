@@ -1,0 +1,5 @@
+# /etc/default/tftpd-hpa
+TFTP_USERNAME="tftp"
+TFTP_DIRECTORY="/data/tftp"
+TFTP_ADDRESS="0.0.0.0:69"
+TFTP_OPTIONS="--secure --ipv4 --create --permissive --create --umask 027"

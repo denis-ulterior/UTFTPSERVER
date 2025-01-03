@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  dhcp-tftp-server:
+    image: dhcp-tftp-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "67:67/udp"  # Porta do servidor DHCP
+      - "69:69/udp"  # Porta do servidor TFTP
+      - "21:21"      # Porta do servidor FTP
+      - "10000-10100:10000-10100"  # Portas para modo passivo do FTP
+    volumes:
+      - ./dhcp-data:/data/dhcp  # Persistência de dados do DHCP
+      - ./tftp-data:/data/tftp  # Persistência de dados do TFTP
+      - ./ftp-data:/data/ftp    # Persistência de dados do FTP
+    restart: unless-stopped
+    networks:
+      custom_network:
+        ipv4_address: 192.168.200.2
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.200.0/24
