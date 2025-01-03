@@ -10,7 +10,10 @@ RUN apt-get update && apt-get install -y \
 # Criar diretórios para persistência de dados
 RUN mkdir -p /data/dhcp /data/tftp /data/ftp
 RUN chown -R tftp:tftp /data/tftp
-#RUN chmod 777 /data/tftp
+RUN chmod 777 /data/tftp
+RUN chmod -R 777 /data/dhcp
+RUN echo 'INTERFACESv4="eth0"' > /etc/default/isc-dhcp-server
+
 
 # Copiar arquivos de configuração para os locais corretos
 COPY dhcpd.conf /etc/dhcp/dhcpd.conf
@@ -23,5 +26,7 @@ EXPOSE 67/udp 69/udp 21 10000-10100
 VOLUME ["/data/dhcp", "/data/tftp", "/data/ftp"]
 
 # Comando para iniciar os serviços
-CMD service tftpd-hpa start && \
+CMD rm -f /var/run/dhcpd.pid && \
+    service isc-dhcp-server start && \
+    service tftpd-hpa start && \
     tail -f /dev/null
